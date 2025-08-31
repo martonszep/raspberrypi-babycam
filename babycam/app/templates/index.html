@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>Streaming: {{ 'ON' if streaming else 'OFF' }}</p>
+    <a href="/toggle">Toggle Streaming</a>
+    <br><br>
+    {% if streaming %}
+      <img src="{{ url_for('main.video_feed') }}" width="640">
+    {% endif %}
+{% endblock content %}
