@@ -2,12 +2,12 @@
 
 {% block content %}
     <p>Streaming: {{ 'ON' if streaming else 'OFF' }}</p>
-    <p>CPU Temp: {{ temp_c }}°C</p>
+    <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
     <a href="/toggle">Toggle Streaming</a>
     <br><br>
-    
+
     {% if streaming %}
     <br><br>
-    <iframe src="http://{{ request.host.split(':')[0] }}:8889/cam" width="640" height="480"></iframe>
+    <iframe src="http://{{ request.host.split(':')[0] }}:8889/cam_with_audio" width="640" height="480"></iframe>
     {% endif %}
 {% endblock content %}

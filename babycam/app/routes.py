@@ -7,15 +7,17 @@ bp = Blueprint("main", __name__)
 # Global variable to track stream process
 stream_process = None
 
-@bp.route("/")
-def index():
-    # Get CPU temp
+def get_cpu_temp():
     try:
         with open("/sys/class/thermal/thermal_zone0/temp") as f:
-            temp_c = int(f.read()) / 1000
+            return int(f.read()) / 1000
     except:
-        temp_c = None
+        return None
+
+@bp.route("/")
+def index():
     streaming = stream_process is not None
+    temp_c = get_cpu_temp()
     return render_template("index.html", streaming=streaming, temp_c=temp_c)
 
 @bp.route("/toggle")
@@ -31,3 +33,8 @@ def toggle_stream():
         stream_process.terminate()
         stream_process = None
     return redirect(url_for("main.index"))
+
+@bp.route("/temperature")
+def temperature():
+    """Return current CPU temperature for AJAX refresh"""
+    return str(get_cpu_temp())
