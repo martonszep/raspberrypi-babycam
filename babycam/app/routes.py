@@ -1,23 +1,33 @@
-from flask import Blueprint, render_template, Response
-from .stream import mjpeg_generator
+from flask import Blueprint, render_template, redirect, url_for
+import subprocess
+import os
 
 bp = Blueprint("main", __name__)
 
-streaming_enabled = False
+# Global variable to track stream process
+stream_process = None
 
 @bp.route("/")
 def index():
-    return render_template("index.html", streaming=streaming_enabled)
-
-@bp.route("/video_feed")
-def video_feed():
-    if streaming_enabled:
-        return Response(mjpeg_generator(),
-                        mimetype="multipart/x-mixed-replace; boundary=frame")
-    return "Streaming is off"
+    # Get CPU temp
+    try:
+        with open("/sys/class/thermal/thermal_zone0/temp") as f:
+            temp_c = int(f.read()) / 1000
+    except:
+        temp_c = None
+    streaming = stream_process is not None
+    return render_template("index.html", streaming=streaming, temp_c=temp_c)
 
 @bp.route("/toggle")
 def toggle_stream():
-    global streaming_enabled
-    streaming_enabled = not streaming_enabled
-    return f"Streaming {'enabled' if streaming_enabled else 'disabled'}"
+    global stream_process
+    if stream_process is None:
+        # Start MediaMTX
+        stream_process = subprocess.Popen(
+            ["./mediamtx"]
+        )
+    else:
+        # Stop MediaMTX
+        stream_process.terminate()
+        stream_process = None
+    return redirect(url_for("main.index"))
