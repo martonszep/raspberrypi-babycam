@@ -5,10 +5,6 @@
     <p>Audio: {{ 'ON' if audio_enabled else 'OFF' }}</p>
     <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
     <br><br>
-
-    <a href="/toggle_video">Toggle Video</a> |
-    <a href="/toggle_audio">Toggle Audio</a>
-    <br><br>
     
     {% if stream_path %}
     <iframe 
@@ -18,4 +14,22 @@
         allowfullscreen
     ></iframe>
     {% endif %}
+
+    <div id="sidebar">
+    <!-- Toggle buttons -->
+    <form action="/toggle_video" method="get">
+        <button type="submit"><i class="fa-solid fa-video"></i> Video {{ 'ON' if video_enabled else 'OFF' }}</button>
+    </form>
+    <form action="/toggle_audio" method="get">
+        <button type="submit"><i class="fa-solid fa-microphone"></i> Audio {{ 'ON' if audio_enabled else 'OFF' }}</button>
+    </form>
+
+    <!-- System buttons -->
+    <a href="/shutdown" class="system-btn" onclick="return confirm('Really shutdown the Pi?')">
+        <i class="fa-solid fa-power-off"></i> Shutdown
+    </a>
+    <a href="/reboot" class="system-btn" onclick="return confirm('Really reboot the Pi?')">
+        <i class="fa-solid fa-rotate-right"></i> Reboot
+    </a>
+</div>
 {% endblock content %}

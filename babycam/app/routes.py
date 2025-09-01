@@ -20,7 +20,7 @@ def start_mediamtx():
     global mediamtx_process
     if mediamtx_process is None:
         mediamtx_process = subprocess.Popen(
-            ["/home/martons/mediamtx/mediamtx", "/home/martons/mediamtx/mediamtx.yml"]
+            ["/home/martons/raspberrypi-babycam/mediamtx/mediamtx", "/home/martons/raspberrypi-babycam/mediamtx/mediamtx.yml"]
         )
 
 def stop_mediamtx():
@@ -79,3 +79,9 @@ def shutdown():
     """Shutdown the Raspberry Pi"""
     subprocess.Popen(["sudo", "shutdown", "-h", "now"])
     return "Shutting down..."
+
+@bp.route("/reboot")
+def reboot():
+    """Reboot the Raspberry Pi"""
+    subprocess.Popen(["sudo", "reboot"])
+    return "Rebooting..."
