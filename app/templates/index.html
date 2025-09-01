@@ -1,25 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Video: {{ 'ON' if video_enabled else 'OFF' }}</p>
-    <p>Audio: {{ 'ON' if audio_enabled else 'OFF' }}</p>
-    <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
-    <br><br>
-    
-    {% if stream_path %}
-    <iframe 
-        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
-        width="640" height="480"
-        allow="fullscreen; autoplay; camera; microphone"
-        allowfullscreen
-    ></iframe>
-    {% endif %}
+<p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
 
-    <div id="sidebar">
-    <!-- Toggle buttons -->
+{% if stream_path %}
+<iframe 
+    src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+    width="640" height="480"
+    allow="fullscreen; autoplay; camera; microphone"
+    allowfullscreen
+></iframe>
+{% endif %}
+
+<!-- Sidebar toggle button -->
+<button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+
+<!-- Sidebar -->
+<div id="sidebar">
+    <!-- Video toggle -->
     <form action="/toggle_video" method="get">
         <button type="submit"><i class="fa-solid fa-video"></i> Video {{ 'ON' if video_enabled else 'OFF' }}</button>
     </form>
+
+    <!-- Audio toggle -->
     <form action="/toggle_audio" method="get">
         <button type="submit"><i class="fa-solid fa-microphone"></i> Audio {{ 'ON' if audio_enabled else 'OFF' }}</button>
     </form>
