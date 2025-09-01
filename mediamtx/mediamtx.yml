@@ -760,9 +760,8 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
-  mic:
-    source: alsa://hw:0,0
-    
+  # mic:
+  #   source: alsa://hw:0,0
   cam:
     source: rpiCamera
     runOnReady: >
