@@ -642,11 +642,11 @@ pathDefaults:
   # Codec (auto, hardwareH264, softwareH264 or mjpeg).
   # When is "auto" and stream is primary, it defaults to hardwareH264 (if available) or softwareH264.
   # When is "auto" and stream is secondary, it defaults to mjpeg.
-  rpiCameraCodec: auto
+  rpiCameraCodec: hardwareH264
   # Period between IDR frames (when codec is hardwareH264 or softwareH264).
   rpiCameraIDRPeriod: 60
   # Bitrate (when codec is hardwareH264 or softwareH264).
-  rpiCameraBitrate: 5000000
+  rpiCameraBitrate: 2000000
   # Hardware H264 profile (baseline, main or high) (when codec is hardwareH264).
   rpiCameraHardwareH264Profile: main
   # Hardware H264 level (4.0, 4.1 or 4.2) (when codec is hardwareH264).
@@ -760,6 +760,9 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
+  mic:
+    source: alsa://hw:0,0
+    
   cam:
     source: rpiCamera
     runOnReady: >

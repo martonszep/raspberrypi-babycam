@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Streaming: {{ 'ON' if streaming else 'OFF' }}</p>
+    <p>Video: {{ 'ON' if video_enabled else 'OFF' }}</p>
+    <p>Audio: {{ 'ON' if audio_enabled else 'OFF' }}</p>
     <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
-    <a href="/toggle">Toggle Streaming</a>
     <br><br>
 
-    {% if streaming %}
+    <a href="/toggle_video">Toggle Video</a> |
+    <a href="/toggle_audio">Toggle Audio</a>
     <br><br>
+    
+    {% if stream_path %}
     <iframe 
-    src="http://{{ request.host.split(':')[0] }}:8889/cam_with_audio"
-    width="640" height="480"
-    allow="fullscreen; autoplay; camera; microphone"
-    allowfullscreen
+        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+        width="640" height="480"
+        allow="fullscreen; autoplay; camera; microphone"
+        allowfullscreen
     ></iframe>
     {% endif %}
 {% endblock content %}
