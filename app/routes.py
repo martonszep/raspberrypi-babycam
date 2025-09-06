@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for
 import subprocess
 import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 bp = Blueprint("main", __name__)
 
 # Global variable to track stream process
@@ -19,9 +20,10 @@ def get_cpu_temp():
 def start_mediamtx():
     global mediamtx_process
     if mediamtx_process is None:
-        mediamtx_process = subprocess.Popen(
-            ["/home/martons/raspberrypi-babycam/mediamtx/mediamtx", "/home/martons/raspberrypi-babycam/mediamtx/mediamtx.yml"]
-        )
+        mediamtx_process = subprocess.Popen([
+            os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
+            os.path.join(BASE_DIR, "../mediamtx/custom_mediamtx.yml")
+        ])
 
 def stop_mediamtx():
     global mediamtx_process
