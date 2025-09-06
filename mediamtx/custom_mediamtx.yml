@@ -772,7 +772,6 @@ paths:
       alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
     runOnReadyRestart: yes
   cam_with_audio:
-    sourceOnDemand: yes
   # example:
   # my_camera:
   #   source: rtsp://my_camera
