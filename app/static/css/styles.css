@@ -15,11 +15,12 @@
     flex-direction: column;
     gap: 8px;
     transition: transform 0.3s ease;
+    transform: translateX(0); /* fully visible when not collapsed */
 }
 
 /* Collapsed sidebar */
 #sidebar.collapsed {
-    transform: translateX(140px);
+    transform: translateX(200px); /* move it fully off screen */
 }
 
 /* Sidebar toggle button */
@@ -63,6 +64,10 @@
     background-color: #c0392b;
 }
 
+#sidebar .system-btn:first-of-type {
+    margin-top: 20px;   /* space between video/audio and shutdown/reboot */
+}
+
 /* Mobile responsive */
 @media screen and (max-width: 600px) {
     #sidebar {
@@ -84,5 +89,95 @@
     #sidebar-toggle {
         top: auto;
         bottom: 50px;
+    }
+}
+
+/* Bottom bar for mobile controls */
+#mobile-controls {
+    display: none;
+}
+
+/* Slide-in sidebar for shutdown/reboot (mobile) */
+#control-sidebar {
+    position: fixed;
+    top: 0;
+    right: -220px;  /* push it fully off screen, wider than sidebar width */
+    width: 200px;
+    height: 100%;
+    background-color: #f5f5f5;
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 6px rgba(0,0,0,0.3);
+    padding: 10px;
+    transition: right 0.3s ease;
+    z-index: 2000;
+}
+
+#control-sidebar.open {
+    right: 0;
+}
+
+/* Buttons in sidebar */
+#control-sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e74c3c;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+
+#control-sidebar a:hover {
+    background-color: #c0392b;
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 600px) {
+    #sidebar {
+        display: none; /* hide desktop sidebar */
+    }
+
+    #sidebar-toggle {
+        display: none;
+    }
+
+    #mobile-controls {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(245,245,245,0.95);
+        border-top: 1px solid #ccc;
+        padding: 10px;
+        z-index: 1500;
+    }
+
+    #mobile-controls button {
+        flex: 1;
+        margin: 0 5px;
+        padding: 14px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+    }
+
+    #mobile-controls button:hover {
+        background-color: #2980b9;
+    }
+
+    #mobile-controls .control-btn {
+        background-color: #e67e22;
+    }
+
+    #mobile-controls .control-btn:hover {
+        background-color: #d35400;
     }
 }

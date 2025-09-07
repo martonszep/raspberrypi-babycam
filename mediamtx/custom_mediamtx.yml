@@ -764,7 +764,7 @@ paths:
   #   source: alsa://hw:0,0
   cam:
     source: rpiCamera
-    sourceOnDemand: yes
+    # sourceOnDemand: yes
     runOnReady: >
       gst-launch-1.0
       rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
@@ -772,6 +772,8 @@ paths:
       alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
     runOnReadyRestart: yes
   cam_with_audio:
+  # sourceOnDemand: yes
+
   # example:
   # my_camera:
   #   source: rtsp://my_camera

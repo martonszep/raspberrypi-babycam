@@ -15,7 +15,7 @@
 <!-- Sidebar toggle button -->
 <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
 
-<!-- Sidebar -->
+<!-- Desktop sidebar -->
 <div id="sidebar">
     <!-- Video toggle -->
     <form action="/toggle_video" method="get">
@@ -34,5 +34,22 @@
     <a href="/reboot" class="system-btn" onclick="return confirm('Really reboot the Pi?')">
         <i class="fa-solid fa-rotate-right"></i> Reboot
     </a>
+</div>
+
+<!-- Mobile bottom bar -->
+<div id="mobile-controls">
+    <form action="/toggle_video" method="get">
+        <button type="submit"><i class="fa-solid fa-video"></i></button>
+    </form>
+    <form action="/toggle_audio" method="get">
+        <button type="submit"><i class="fa-solid fa-microphone"></i></button>
+    </form>
+    <button class="control-btn" onclick="toggleControlSidebar()"><i class="fa-solid fa-gear"></i></button>
+</div>
+
+<!-- Mobile control sidebar -->
+<div id="control-sidebar">
+    <a href="/shutdown" onclick="return confirm('Really shutdown the Pi?')"><i class="fa-solid fa-power-off"></i> Shutdown</a>
+    <a href="/reboot" onclick="return confirm('Really reboot the Pi?')"><i class="fa-solid fa-rotate-right"></i> Reboot</a>
 </div>
 {% endblock content %}
