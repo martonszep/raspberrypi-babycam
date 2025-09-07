@@ -28,7 +28,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install python3-venv python3-pip git -y
 
 # For audio-only streaming install (default config for icecast is fine):
-sudo apt install icecast2 ffmpeg -y
+sudo apt install libportaudio2 libportaudiocpp0 portaudio19-dev icecast2 ffmpeg -y
 sudo systemctl enable icecast2
 sudo systemctl restart icecast2
 

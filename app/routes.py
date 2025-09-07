@@ -91,7 +91,7 @@ def toggle_audio():
             '-ar', '16000', '-content_type', 'audio/ogg', '-f', 'ogg',
             'icecast://source:hackme@localhost:8000/audio.ogg'
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=16000)
+        start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
     else:
         stop_audio_stream()
     return redirect(url_for("main.index"))
