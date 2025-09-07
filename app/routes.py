@@ -85,13 +85,21 @@ def toggle_audio():
         start_mediamtx()
     elif audio_enabled and not video_enabled:
         stop_mediamtx()
+        stop_audio_stream() # Kill old process if running
         audio_process = subprocess.Popen([
-            'ffmpeg', '-f', 'alsa', '-ac', '1', '-ar', '44100', '-sample_fmt',
-            's16', '-i', 'plughw:0,0', '-c:a', 'libopus', '-b:a', '32000',
-            '-ar', '16000', '-content_type', 'audio/ogg', '-f', 'ogg',
+            'ffmpeg',
+            '-f', 'alsa',
+            '-ac', '1',
+            '-ar', '44100',
+            '-sample_fmt', 's16',
+            '-i', 'plughw:0,0',
+            '-c:a', 'libopus',
+            '-b:a', '32000',
+            '-content_type', 'audio/ogg',
+            '-f', 'ogg',
             'icecast://source:hackme@localhost:8000/audio.ogg'
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
+        ])
+        start_loudness_worker(device='plughw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
     else:
         stop_audio_stream()
     return redirect(url_for("main.index"))
@@ -106,10 +114,10 @@ def loudness():
         'history': h
     })
 
-# @bp.route("/temperature")
-# def temperature():
-#     """Return current CPU temperature for AJAX refresh"""
-#     return str(get_cpu_temp())
+@bp.route("/temperature")
+def temperature():
+    """Return current CPU temperature for AJAX refresh"""
+    return str(get_cpu_temp())
 
 @bp.route("/shutdown")
 def shutdown():

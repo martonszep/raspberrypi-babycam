@@ -28,6 +28,7 @@ def measure_block(duration=0.5, samplerate=16000, device=None):
         db = 20 * np.log10(rms) if rms > 0 else -120.0
         return rms, db
     except Exception:
+        print("measure_block error:", e)
         return 0.0, -120.0
 
 def _loop(sample_interval=1.0, duration=0.5, samplerate=16000, device=None, stop_event=None):
