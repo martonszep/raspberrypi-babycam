@@ -6,8 +6,14 @@ toggleBtn.addEventListener('click', () => {
 });
 
 function toggleControlSidebar() {
-    const sidebar = document.getElementById('control-sidebar');
-    sidebar.classList.toggle('open');
+    const sidebar = document.getElementById("control-sidebar");
+    const overlay = document.getElementById("overlay");
+    sidebar.classList.toggle("open");
+    if (sidebar.classList.contains("open")) {
+        overlay.style.display = "block";
+    } else {
+        overlay.style.display = "none";
+    }
 }
 
 // Refresh CPU temp every 5s

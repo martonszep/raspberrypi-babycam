@@ -1,3 +1,7 @@
+#mobile-controls {
+    display: none; /* default hidden */
+}
+
 /* Hide desktop sidebar + toggle in mobile */
 @media screen and (max-width: 600px) {
     #sidebar {
@@ -63,8 +67,25 @@
     z-index: 2000;
 }
 
+/* Overlay behind control sidebar */
+#control-sidebar-overlay {
+    display: none; /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1900; /* just under the sidebar */
+}
+
 #control-sidebar.open {
     right: 0;
+}
+
+/* Show overlay when sidebar is open */
+#control-sidebar.open + #control-sidebar-overlay {
+    display: block;
 }
 
 #control-sidebar a {
