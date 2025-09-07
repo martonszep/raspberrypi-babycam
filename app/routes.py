@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, jsonify
 import subprocess
 import os
+import time
 from .services.loudness_worker import Loudness, start_loudness_worker, stop_loudness_worker
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -47,6 +48,7 @@ def index():
     # Decide which stream to show
     if video_enabled and audio_enabled:
         stream_path = "cam_with_audio"
+        stop_audio_stream()
     elif video_enabled:
         stream_path = "cam"
         stop_audio_stream()  # stop audio if only video
@@ -73,6 +75,7 @@ def toggle_video():
     video_enabled = not video_enabled
     if video_enabled:
         start_mediamtx()
+        stop_audio_stream()
     else:
         stop_mediamtx
     return redirect(url_for("main.index"))
@@ -81,11 +84,11 @@ def toggle_video():
 def toggle_audio():
     global audio_enabled, audio_process
     audio_enabled = not audio_enabled
+    stop_audio_stream()
     if video_enabled and audio_enabled:
-        start_mediamtx()
+        start_mediamtx()        
     elif audio_enabled and not video_enabled:
         stop_mediamtx()
-        stop_audio_stream() # Kill old process if running
         audio_process = subprocess.Popen([
             'ffmpeg',
             '-f', 'alsa',
@@ -99,9 +102,8 @@ def toggle_audio():
             '-f', 'ogg',
             'icecast://source:hackme@localhost:8000/audio.ogg'
         ])
+        time.sleep(0.5)
         start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
-    else:
-        stop_audio_stream()
     return redirect(url_for("main.index"))
 
 @bp.route('/loudness')
