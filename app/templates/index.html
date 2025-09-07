@@ -3,8 +3,9 @@
 {% block content %}
 <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
 
-{% if stream_path %}
+{% if video_enabled %}
 <div class="responsive-video">
+    <!-- WebRTC stream -->
     <iframe
         id="video-iframe"
         src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
@@ -12,8 +13,20 @@
         allowfullscreen
     ></iframe>
 </div>
-></iframe>
+{% elif audio_enabled %}
+    <!-- Audio-only icecast stream -->
+    <audio id="audio-player" controls autoplay>
+        <source src="http://{{ request.host.split(':')[0] }}:8000/audio.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- Loudness display -->
+    <div id="loudness-panel">
+        <div>Level: <span id="loudness-db">{{ loudness_db if loudness_db is defined else 'N/A' }}</span> dB</div>
+        <canvas id="loudness-chart" width="400" height="80"></canvas>
+    </div>
 {% endif %}
+
+
 
 <!-- Sidebar toggle button -->
 <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
