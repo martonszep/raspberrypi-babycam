@@ -5,7 +5,8 @@
 
 {% if stream_path %}
 <div class="responsive-video">
-    <iframe 
+    <iframe
+        id="video-iframe"
         src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
         allow="fullscreen; autoplay; camera; microphone"
         allowfullscreen
