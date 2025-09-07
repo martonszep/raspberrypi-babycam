@@ -4,11 +4,13 @@
 <p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
 
 {% if stream_path %}
-<iframe 
-    src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
-    width="640" height="480"
-    allow="fullscreen; autoplay; camera; microphone"
-    allowfullscreen
+<div class="responsive-video">
+    <iframe 
+        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+        allow="fullscreen; autoplay; camera; microphone"
+        allowfullscreen
+    ></iframe>
+</div>
 ></iframe>
 {% endif %}
 
@@ -39,10 +41,16 @@
 <!-- Mobile bottom bar -->
 <div id="mobile-controls">
     <form action="/toggle_video" method="get">
-        <button type="submit"><i class="fa-solid fa-video"></i></button>
+        <button type="submit">
+            <i class="fa-solid fa-video"></i>
+            <span class="status-led {{ 'on' if video_enabled else 'off' }}"></span>
+        </button>
     </form>
     <form action="/toggle_audio" method="get">
-        <button type="submit"><i class="fa-solid fa-microphone"></i></button>
+        <button type="submit">
+            <i class="fa-solid fa-microphone"></i>
+            <span class="status-led {{ 'on' if audio_enabled else 'off' }}"></span>
+        </button>
     </form>
     <button class="control-btn" onclick="toggleControlSidebar()"><i class="fa-solid fa-gear"></i></button>
 </div>
