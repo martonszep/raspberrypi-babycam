@@ -27,7 +27,7 @@ def measure_block(duration=0.5, samplerate=16000, device=None):
         rms = float(np.sqrt(np.mean(audio ** 2) + 1e-16))
         db = 20 * np.log10(rms) if rms > 0 else -120.0
         return rms, db
-    except Exception:
+    except Exception as e:
         print("measure_block error:", e)
         return 0.0, -120.0
 
