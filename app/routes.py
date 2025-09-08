@@ -103,7 +103,7 @@ def toggle_audio():
             'icecast://source:hackme@localhost:8000/audio.ogg'
         ])
         time.sleep(0.5)
-        start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
+        # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
     return redirect(url_for("main.index"))
 
 @bp.route('/loudness')
