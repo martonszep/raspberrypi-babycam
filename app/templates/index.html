@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
+
+{% if video_enabled %}
+<div class="responsive-video">
+    <!-- WebRTC stream -->
+    <iframe
+        id="video-iframe"
+        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+        allow="fullscreen; autoplay; camera; microphone"
+        allowfullscreen
+    ></iframe>
+</div>
+{% elif audio_enabled %}
+    <!-- Audio-only icecast stream -->
+    <audio id="audio-player" controls autoplay>
+        <source src="http://{{ request.host.split(':')[0] }}:8000/audio.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- Loudness display -->
+    <!-- <div id="loudness-panel">
+        <div>Level: <span id="loudness-db">{{ loudness_db if loudness_db is defined else 'N/A' }}</span> dB</div>
+        <canvas id="loudness-chart" width="400" height="80"></canvas>
+    </div> -->
+{% endif %}
+
+
+
+<!-- Sidebar toggle button -->
+<button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+
+<!-- Desktop sidebar -->
+<div id="sidebar">
+    <!-- Video toggle -->
+    <form action="/toggle_video" method="get">
+        <button type="submit"><i class="fa-solid fa-video"></i> Video {{ 'ON' if video_enabled else 'OFF' }}</button>
+    </form>
+
+    <!-- Audio toggle -->
+    <form action="/toggle_audio" method="get">
+        <button type="submit"><i class="fa-solid fa-microphone"></i> Audio {{ 'ON' if audio_enabled else 'OFF' }}</button>
+    </form>
+
+    <!-- System buttons -->
+    <a href="/shutdown" class="system-btn" onclick="return confirm('Really shutdown the Pi?')">
+        <i class="fa-solid fa-power-off"></i> Shutdown
+    </a>
+    <a href="/reboot" class="system-btn" onclick="return confirm('Really reboot the Pi?')">
+        <i class="fa-solid fa-rotate-right"></i> Reboot
+    </a>
+</div>
+
+<!-- Mobile bottom bar -->
+<div id="mobile-controls">
+    <form action="/toggle_video" method="get">
+        <button type="submit">
+            <i class="fa-solid fa-video"></i>
+            <span class="status-led {{ 'on' if video_enabled else 'off' }}"></span>
+        </button>
+    </form>
+    <form action="/toggle_audio" method="get">
+        <button type="submit">
+            <i class="fa-solid fa-microphone"></i>
+            <span class="status-led {{ 'on' if audio_enabled else 'off' }}"></span>
+        </button>
+    </form>
+    <button class="control-btn" onclick="toggleControlSidebar()"><i class="fa-solid fa-gear"></i></button>
+</div>
+
+<!-- Mobile control sidebar -->
+<div id="control-sidebar">
+    <a href="/shutdown" onclick="return confirm('Really shutdown the Pi?')"><i class="fa-solid fa-power-off"></i> Shutdown</a>
+    <a href="/reboot" onclick="return confirm('Really reboot the Pi?')"><i class="fa-solid fa-rotate-right"></i> Reboot</a>
+</div>
+<div id="control-sidebar-overlay" onclick="toggleControlSidebar()"></div>
+{% endblock content %}

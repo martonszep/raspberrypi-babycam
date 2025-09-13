@@ -1,0 +1,32 @@
+/* Responsive video iframe */
+.responsive-video {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* 4:3 aspect ratio (480/640 = 0.75) */
+    height: 0;
+    overflow: hidden;
+    border: none;
+}
+
+.responsive-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Small LED indicator */
+.status-led {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 6px;
+    background-color: grey; /* default off */
+}
+
+.status-led.on {
+    background-color: red; /* active */
+}
