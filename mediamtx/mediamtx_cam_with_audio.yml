@@ -776,7 +776,7 @@ paths:
   #     alsasrc device=hw:0,0 !
   #     audioconvert ! audioresample !
   #     opusenc bitrate=16000 !
-  #     rtspclientsink location=rtsp://localhost:8554/audio
+  #     rtspclientsink location=rtsp://127.0.0.1:8554/audio
   #   runOnReadyRestart: yes
 
   # example:

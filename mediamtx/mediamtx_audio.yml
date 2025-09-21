@@ -760,14 +760,15 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
+  cam:
+    source: rpiCamera
   audio:
-    source: audio
     runOnReady: >
       gst-launch-1.0 -v
       alsasrc device=hw:0,0 !
       audioconvert ! audioresample !
       opusenc bitrate=16000 !
-      rtspclientsink location=rtsp://localhost:8554/audio
+      rtspclientsink location=rtsp://127.0.0.1:8554/audio
     runOnReadyRestart: yes
 
   # example:
