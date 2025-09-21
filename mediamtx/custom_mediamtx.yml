@@ -762,22 +762,22 @@ pathDefaults:
 paths:
   cam:
     source: rpiCamera
-    runOnDemand: >
+    runOnReady: >
       gst-launch-1.0
       rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
       rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
       alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
-    runOnDemandRestart: yes
+    runOnReadyRestart: yes
   cam_with_audio:
 
-  audio_only:
-    runOnDemand: >
-      gst-launch-1.0 -v
-      alsasrc device=hw:0,0 !
-      audioconvert ! audioresample !
-      opusenc bitrate=16000 !
-      rtspclientsink location=rtsp://localhost:8554/audio_only
-    runOnDemandRestart: yes
+  # audio_only:  # Device usage conflict with cam_with_audio
+  #   runOnReady: >
+  #     gst-launch-1.0 -v
+  #     alsasrc device=hw:0,0 !
+  #     audioconvert ! audioresample !
+  #     opusenc bitrate=16000 !
+  #     rtspclientsink location=rtsp://localhost:8554/audio_only
+  #   runOnReadyRestart: yes
 
   # example:
   # my_camera:

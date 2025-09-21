@@ -11,6 +11,7 @@ bp = Blueprint("main", __name__)
 video_enabled = False
 audio_enabled = False
 mediamtx_process = None
+audio_only_process = None
 
 def get_cpu_temp():
     try:
@@ -33,6 +34,29 @@ def stop_mediamtx():
         mediamtx_process.terminate()
         mediamtx_process = None
 
+def start_audio_only():
+    """Start standalone audio-only GStreamer pipeline (no MediaMTX)."""
+    global audio_only_process
+    if audio_only_process is None:
+        audio_only_process = subprocess.Popen([
+            "gst-launch-1.0",
+            "alsasrc", "device=hw:0,0",
+            "!", "audioconvert", "!", "audioresample",
+            "!", "opusenc", "bitrate=16000",
+            "!", "rtspclientsink", "location=rtsp://localhost:8554/audio_only"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(0.5)
+    # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
+
+
+def stop_audio_only():
+    """Stop standalone audio-only pipeline."""
+    global audio_only_process
+    if audio_only_process:
+        audio_only_process.terminate()
+        audio_only_process = None
+    # stop_loudness_worker()
+
 
 @bp.route("/")
 def index():
@@ -41,13 +65,20 @@ def index():
     # Decide which stream to show
     if video_enabled and audio_enabled:
         stream_path = "cam_with_audio"
+        stop_audio_only()
+        start_mediamtx()
     elif video_enabled:
         stream_path = "cam"
+        stop_audio_only()
+        start_mediamtx()
     elif audio_enabled:
         stream_path = "audio_only"
+        stop_mediamtx()
+        start_audio_only()
     else:
         stream_path = None
         stop_mediamtx()
+        stop_audio_only()
 
     temp_c = get_cpu_temp()
     return render_template(
@@ -62,37 +93,12 @@ def index():
 def toggle_video():
     global video_enabled
     video_enabled = not video_enabled
-    if video_enabled or audio_enabled:
-        start_mediamtx()
-    else:
-        stop_mediamtx
     return redirect(url_for("main.index"))
 
 @bp.route("/toggle_audio")
 def toggle_audio():
     global audio_enabled
     audio_enabled = not audio_enabled
-    if audio_enabled:
-        start_mediamtx()
-        # audio_process = subprocess.Popen([
-        #     'ffmpeg',
-        #     '-f', 'alsa',
-        #     '-ac', '1',
-        #     '-ar', '44100',
-        #     '-sample_fmt', 's16',
-        #     '-i', 'plughw:0,0',
-        #     '-c:a', 'libopus',
-        #     '-b:a', '32000',
-        #     '-content_type', 'audio/ogg',
-        #     '-f', 'ogg',
-        #     'icecast://source:hackme@localhost:8000/audio.ogg'
-        # ])
-        # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)       
-    else:
-        stop_loudness_worker()
-        if not video_enabled:
-            stop_mediamtx()
-
     return redirect(url_for("main.index"))
 
 @bp.route('/loudness')
