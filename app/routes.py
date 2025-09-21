@@ -11,7 +11,6 @@ bp = Blueprint("main", __name__)
 video_enabled = False
 audio_enabled = False
 mediamtx_process = None
-audio_only_process = None
 
 def get_cpu_temp():
     try:
@@ -20,12 +19,12 @@ def get_cpu_temp():
     except:
         return None
     
-def start_mediamtx():
+def start_mediamtx(path: str):
     global mediamtx_process
     if mediamtx_process is None:
         mediamtx_process = subprocess.Popen([
             os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
-            os.path.join(BASE_DIR, "../mediamtx/custom_mediamtx.yml")
+            os.path.join(BASE_DIR, f"../mediamtx/mediamtx_{path}.yml")
         ])
 
 def stop_mediamtx():
@@ -34,28 +33,10 @@ def stop_mediamtx():
         mediamtx_process.terminate()
         mediamtx_process = None
 
-def start_audio_only():
-    """Start standalone audio-only GStreamer pipeline (no MediaMTX)."""
-    global audio_only_process
-    if audio_only_process is None:
-        audio_only_process = subprocess.Popen([
-            "gst-launch-1.0",
-            "alsasrc", "device=hw:0,0",
-            "!", "audioconvert", "!", "audioresample",
-            "!", "opusenc", "bitrate=16000",
-            "!", "rtspclientsink", "location=rtsp://localhost:8554/audio_only"
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(0.5)
-    # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
-
-
-def stop_audio_only():
-    """Stop standalone audio-only pipeline."""
-    global audio_only_process
-    if audio_only_process:
-        audio_only_process.terminate()
-        audio_only_process = None
-    # stop_loudness_worker()
+def switch_mediamtx(path):
+    """Stop MediaMTX and restart it to use a new path."""
+    stop_mediamtx()
+    start_mediamtx(path)
 
 
 @bp.route("/")
@@ -65,20 +46,18 @@ def index():
     # Decide which stream to show
     if video_enabled and audio_enabled:
         stream_path = "cam_with_audio"
-        stop_audio_only()
-        start_mediamtx()
+        switch_mediamtx(stream_path)
     elif video_enabled:
         stream_path = "cam"
-        stop_audio_only()
-        start_mediamtx()
+        switch_mediamtx(stream_path)
     elif audio_enabled:
-        stream_path = "audio_only"
-        stop_mediamtx()
-        start_audio_only()
+        stream_path = "audio"
+        switch_mediamtx(stream_path)
+        # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
     else:
         stream_path = None
         stop_mediamtx()
-        stop_audio_only()
+        # stop_loudness_worker()
 
     temp_c = get_cpu_temp()
     return render_template(
