@@ -52,7 +52,7 @@ def index():
         stream_path = "cam"
         switch_mediamtx(stream_path)
     elif audio_enabled:
-        stream_path = "audio"
+        stream_path = "audio_only"
         switch_mediamtx(stream_path)
         # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
     else:

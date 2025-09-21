@@ -770,13 +770,13 @@ paths:
     runOnReadyRestart: yes
   cam_with_audio:
 
-  # audio:  # Device usage conflict with cam_with_audio
+  # audio_only:  # Device usage conflict with cam_with_audio
   #   runOnReady: >
   #     gst-launch-1.0 -v
   #     alsasrc device=hw:0,0 !
   #     audioconvert ! audioresample !
   #     opusenc bitrate=16000 !
-  #     rtspclientsink location=rtsp://127.0.0.1:8554/audio
+  #     rtspclientsink location=rtsp://127.0.0.1:8554/audio_only
   #   runOnReadyRestart: yes
 
   # example:
