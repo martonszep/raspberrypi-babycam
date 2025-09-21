@@ -28,9 +28,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install python3-venv python3-pip git -y
 
 # For audio-only streaming install (default config for icecast is fine):
-sudo apt install libportaudio2 libportaudiocpp0 portaudio19-dev icecast2 ffmpeg -y
-sudo systemctl enable icecast2
-sudo systemctl restart icecast2
+sudo apt install libportaudio2 libportaudiocpp0 portaudio19-dev ffmpeg -y
 
 # Gstreamer will take a while to install (supposedly faster than ffmpeg in the long run):
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio gstreamer1.0-rtsp

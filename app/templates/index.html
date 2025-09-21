@@ -15,9 +15,12 @@
 </div>
 {% elif audio_enabled %}
     <!-- Audio-only icecast stream -->
-    <audio id="audio-player" controls autoplay>
-        <source src="http://{{ request.host.split(':')[0] }}:8000/audio.ogg" type="audio/ogg">
-    </audio>
+    <iframe
+        id="audio-iframe"
+        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+        allow="fullscreen; autoplay; microphone"
+        allowfullscreen
+    ></iframe>
 
     <!-- Loudness display -->
     <!-- <div id="loudness-panel">
