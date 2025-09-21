@@ -771,7 +771,6 @@ paths:
   cam_with_audio:
 
   audio_only:
-    sourceOnDemand: yes
     runOnReady: >
       gst-launch-1.0 -v
       alsasrc device=hw:0,0 !
