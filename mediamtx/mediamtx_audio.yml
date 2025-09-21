@@ -762,7 +762,7 @@ pathDefaults:
 paths:
   audio:
     runOnReady: >
-      gst-launch-1.0 -v
+      gst-launch-1.0
       alsasrc device=hw:0,0 !
       audioconvert ! audioresample !
       opusenc bitrate=16000 !
