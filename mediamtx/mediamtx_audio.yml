@@ -761,6 +761,7 @@ pathDefaults:
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
   audio:
+    source: audio
     runOnReady: >
       gst-launch-1.0 -v
       alsasrc device=hw:0,0 !

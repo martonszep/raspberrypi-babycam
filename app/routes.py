@@ -37,6 +37,7 @@ def switch_mediamtx(path):
     """Stop MediaMTX and restart it to use a new path."""
     stop_mediamtx()
     start_mediamtx(path)
+    time.sleep(0.5)  # Give it a moment to start
 
 
 @bp.route("/")
