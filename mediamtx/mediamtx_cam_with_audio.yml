@@ -572,9 +572,9 @@ pathDefaults:
   # Whether this is a secondary stream.
   rpiCameraSecondary: false
   # Width of frames.
-  rpiCameraWidth: 1280
+  rpiCameraWidth: 1920
   # Height of frames.
-  rpiCameraHeight: 720
+  rpiCameraHeight: 1080
   # Flip horizontally.
   rpiCameraHFlip: false
   # Flip vertically.
@@ -776,7 +776,7 @@ paths:
   #     alsasrc device=hw:0,0 !
   #     audioconvert ! audioresample !
   #     opusenc bitrate=16000 !
-  #     rtspclientsink location=rtsp://localhost:8554/audio_only
+  #     rtspclientsink location=rtsp://localhost:8554/audio
   #   runOnReadyRestart: yes
 
   # example:

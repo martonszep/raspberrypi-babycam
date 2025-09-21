@@ -572,9 +572,9 @@ pathDefaults:
   # Whether this is a secondary stream.
   rpiCameraSecondary: false
   # Width of frames.
-  rpiCameraWidth: 1280
+  rpiCameraWidth: 1920
   # Height of frames.
-  rpiCameraHeight: 720
+  rpiCameraHeight: 1080
   # Flip horizontally.
   rpiCameraHFlip: false
   # Flip vertically.
