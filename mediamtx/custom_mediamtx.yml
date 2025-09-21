@@ -760,9 +760,6 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
-  # -----------------------
-  # Audio-only (on-demand)
-  # -----------------------
   audio_only:
     sourceOnDemand: yes
     runOnReady: >
@@ -773,36 +770,15 @@ paths:
       rtspclientsink location=rtsp://localhost:8554/audio_only
     runOnReadyRestart: yes
 
-  # -----------------------
-  # Video-only (on-demand)
-  # -----------------------
   cam:
     source: rpiCamera
-
-  # -----------------------
-  # Video + Audio (on-demand)
-  # -----------------------
-  cam_with_audio:
-    sourceOnDemand: yes
     runOnReady: >
-      gst-launch-1.0 -v
-      rpicamsrc ! videoconvert ! x264enc tune=zerolatency bitrate=2000 speed-preset=superfast ! tee name=vt
-      vt. ! queue ! rtspclientsink location=rtsp://localhost:8554/cam_with_audio
-      alsasrc device=hw:0,0 ! audioconvert ! audioresample ! opusenc bitrate=16000 !
-      rtspclientsink location=rtsp://localhost:8554/cam_with_audio
+      gst-launch-1.0
+      rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
+      rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
+      alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
     runOnReadyRestart: yes
-
-  # cam:
-  #   source: rpiCamera
-  #   # sourceOnDemand: yes
-  #   runOnReady: >
-  #     gst-launch-1.0
-  #     rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
-  #     rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
-  #     alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
-  #   runOnReadyRestart: yes
-  # cam_with_audio:
-  #   # sourceOnDemand: yes
+  cam_with_audio:
 
   # example:
   # my_camera:
