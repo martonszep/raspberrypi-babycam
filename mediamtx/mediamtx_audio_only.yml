@@ -761,13 +761,13 @@ pathDefaults:
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
   audio_only:
-    sourceOnDemand: yes
+    source: audio_only_source
     runOnReady: >
       gst-launch-1.0
       alsasrc device=hw:0,0 !
       audioconvert ! audioresample !
       opusenc bitrate=16000 !
-      rtspclientsink location=rtsp://localhost:8554/audio_only
+      rtspclientsink location=rtsp://localhost:8554/audio_only_source
     runOnReadyRestart: yes
 
   # example:
