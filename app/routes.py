@@ -45,7 +45,6 @@ def index():
         stream_path = "cam"
     elif audio_enabled:
         stream_path = "audio_only"
-        stop_mediamtx()  # stop MediaMTX if only audio
     else:
         stream_path = None
         stop_mediamtx()
