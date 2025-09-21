@@ -31,6 +31,7 @@ def stop_mediamtx():
     global mediamtx_process
     if mediamtx_process:
         mediamtx_process.terminate()
+        mediamtx_process.wait()
         mediamtx_process = None
 
 def switch_mediamtx(path):
