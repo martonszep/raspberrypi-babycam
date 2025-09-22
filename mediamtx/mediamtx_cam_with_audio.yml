@@ -769,7 +769,6 @@ paths:
   #     alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
   #   runOnReadyRestart: yes
   cam_with_audio:
-    description: "Live camera feed with audio using rpicam-vid"
     runOnInit: >
       sh -c 'rpicam-vid -t 0 --inline -o - --width 1920 --height 1080 --framerate 30 | 
       gst-launch-1.0 -v fdsrc ! h264parse ! mpegtsmux name=mux ! 
