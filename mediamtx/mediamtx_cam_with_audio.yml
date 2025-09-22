@@ -241,7 +241,8 @@ rtsp: yes
 # UDP-multicast allows to save bandwidth when clients are all in the same LAN.
 # TCP is the most versatile.
 # The handshake is always performed with TCP.
-rtspTransports: [udp, multicast, tcp]
+rtspTransports: [tcp]
+# rtspTransports: [udp, multicast, tcp]
 # Use secure protocol variants (RTSPS, TLS, SRTP).
 # Available values are "no", "strict", "optional".
 rtspEncryption: "no"
@@ -760,15 +761,22 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
-  cam:
-    source: rpiCamera
-    runOnReady: >
-      gst-launch-1.0
-      rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
-      rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
-      alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
-    runOnReadyRestart: yes
+  # cam:
+  #   source: rpiCamera
+  #   runOnReady: >
+  #     gst-launch-1.0
+  #     rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
+  #     rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
+  #     alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
+  #   runOnReadyRestart: yes
   cam_with_audio:
+    description: "Live camera feed with audio using rpicam-vid"
+    runOnInit: >
+      sh -c 'rpicam-vid -t 0 --inline -o - --width 1920 --height 1080 --framerate 30 | 
+      gst-launch-1.0 -v fdsrc ! h264parse ! mpegtsmux name=mux ! 
+      rtspclientsink location=rtsp://localhost:8554/cam_with_video 
+      alsasrc device=hw:0,0 ! audioconvert ! audioresample ! opusenc ! mux.'
+    runOnInitRestart: yes
 
   # audio_only:  # Device usage conflict with cam_with_audio
   #   runOnReady: >
