@@ -760,21 +760,21 @@ pathDefaults:
 # for example "~^(test1|test2)$" will match both "test1" and "test2",
 # for example "~^prefix" will match all paths that start with "prefix".
 paths:
-  # cam:
-  #   source: rpiCamera
-  #   runOnReady: >
-  #     gst-launch-1.0
-  #     rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
-  #     rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
-  #     alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
-  #   runOnReadyRestart: yes
+  cam:
+    source: rpiCamera
+    runOnReady: >
+      gst-launch-1.0
+      rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
+      rtspsrc location=rtsp://127.0.0.1:8554/cam latency=0 ! rtph264depay ! s.
+      alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
+    runOnReadyRestart: yes
   cam_with_audio:
-    runOnInit: >
-      sh -c 'rpicam-vid -t 0 --inline --width 1920 --height 1080 --framerate 30 --bitrate 2000000 | 
-      gst-launch-1.0 -v fdsrc ! h264parse ! queue ! mpegtsmux name=mux ! 
-      rtspclientsink location=rtsp://localhost:8554/cam_with_audio 
-      alsasrc device=hw:0,0 provide-clock=false ! audioconvert ! audioresample ! opusenc bitrate=16000 ! queue ! mux.'
-    runOnInitRestart: yes
+    # runOnInit: >
+    #   sh -c 'rpicam-vid -t 0 --inline --width 1920 --height 1080 --framerate 30 --bitrate 2000000 | 
+    #   gst-launch-1.0 -v fdsrc ! h264parse ! queue ! mpegtsmux name=mux ! 
+    #   rtspclientsink location=rtsp://localhost:8554/cam_with_audio 
+    #   alsasrc device=hw:0,0 provide-clock=false ! audioconvert ! audioresample ! opusenc bitrate=16000 ! queue ! mux.'
+    # runOnInitRestart: yes
 
   # audio_only:  # Device usage conflict with cam_with_audio
   #   runOnReady: >
