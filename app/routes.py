@@ -38,7 +38,7 @@ def index():
         cpu_temp = str(get_cpu_temp()),
         cpu_load = str(get_cpu_load()),
         ram = get_ram_usage(),
-        throttle = get_throttle_status()['active_issues'].join("; ")
+        throttle = "; ".join(get_throttle_status()['active_issues'])
     )
 
 @bp.route("/toggle_video")
