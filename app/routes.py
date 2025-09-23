@@ -14,14 +14,6 @@ audio_enabled = False
 mediamtx_process = None
 
     
-def start_mediamtx(path: str):
-    global mediamtx_process
-    if mediamtx_process is None:
-        mediamtx_process = subprocess.Popen([
-            os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
-            os.path.join(BASE_DIR, f"../mediamtx/mediamtx_{path}.yml")
-        ])
-
 def stop_mediamtx():
     global mediamtx_process
     if mediamtx_process:
@@ -29,10 +21,16 @@ def stop_mediamtx():
         mediamtx_process.wait()
         mediamtx_process = None
 
-def switch_mediamtx(path):
+def restart_mediamtx(path):
     """Stop MediaMTX and restart it to use a new path."""
     stop_mediamtx()
-    start_mediamtx(path)
+    
+    global mediamtx_process
+    if mediamtx_process is None:
+        mediamtx_process = subprocess.Popen([
+            os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
+            os.path.join(BASE_DIR, f"../mediamtx/mediamtx_{path}.yml")
+        ])
     time.sleep(0.5)  # Give it a moment to start
 
 
@@ -43,13 +41,13 @@ def index():
     # Decide which stream to show
     if video_enabled and audio_enabled:
         stream_path = "cam_with_audio"
-        switch_mediamtx(stream_path)
+        restart_mediamtx(stream_path)
     elif video_enabled:
         stream_path = "cam"
-        switch_mediamtx(stream_path)
+        restart_mediamtx(stream_path)
     elif audio_enabled:
         stream_path = "audio_only"
-        switch_mediamtx(stream_path)
+        restart_mediamtx(stream_path)
         # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
     else:
         stream_path = None
@@ -75,15 +73,15 @@ def toggle_audio():
     audio_enabled = not audio_enabled
     return redirect(url_for("main.index"))
 
-@bp.route('/loudness')
-def loudness():
-    # returns latest db and short history
-    h = list(Loudness['history'])
-    return jsonify({
-        'db': Loudness['db'],
-        'rms': Loudness['rms'],
-        'history': h
-    })
+# @bp.route('/loudness')
+# def loudness():
+#     # returns latest db and short history
+#     h = list(Loudness['history'])
+#     return jsonify({
+#         'db': Loudness['db'],
+#         'rms': Loudness['rms'],
+#         'history': h
+#     })
 
 @bp.route("/metrics")
 def metrics():
