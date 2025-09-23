@@ -21,6 +21,7 @@ class MediaState:
         self.video_enabled = False
         self.audio_enabled = False
         self.mediamtx_process = None
+        self.stream_path = None
 
     def stop_mediamtx(self):
         if self.mediamtx_process:
@@ -28,22 +29,39 @@ class MediaState:
             self.mediamtx_process.wait()
             self.mediamtx_process = None
 
-    def restart_mediamtx(self, path: str):
-        """Stop MediaMTX and start a new one with the given path."""
+    def start_mediamtx(self, path):
+        if path == self.current_path and self.mediamtx_process:
+            # Already running the correct path
+            return
         self.stop_mediamtx()
         self.mediamtx_process = subprocess.Popen([
             os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
             os.path.join(BASE_DIR, f"../mediamtx/mediamtx_{path}.yml")
         ])
-        time.sleep(0.5)  # give it a moment to start
+        self.current_path = path
+        # time.sleep(0.5)  # Give it a moment to start
 
-    def check_ram_and_restart(self, threshold_percent=90, path=None):
+    def restart_mediamtx(self):
+        if self.current_path:
+            self.start_mediamtx(self.current_path)
+
+    def check_ram_and_restart(self, threshold_percent=90):
         """Optional: check RAM usage and restart MediaMTX if above threshold."""
         ram_percent = get_ram_usage()["percent"]
-        if ram_percent > threshold_percent and path:
+        if ram_percent > threshold_percent:
             logging.warning(
                 "RAM usage %s%% > %s%%, restarting MediaMTX",
                 ram_percent,
                 threshold_percent,
             )
-            self.restart_mediamtx(path)
+            self.restart_mediamtx()
+
+    def start_ram_monitor(self, path, interval=30, threshold_percent=90):
+        """Start a background thread to periodically check RAM and restart MediaMTX if needed."""
+        def monitor():
+            while True:
+                self.check_ram_and_restart(threshold_percent=threshold_percent)
+                time.sleep(interval)
+
+        t = threading.Thread(target=monitor, daemon=True)
+        t.start()

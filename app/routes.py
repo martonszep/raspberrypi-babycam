@@ -16,25 +16,27 @@ def index():
 
     # Decide which stream to show
     if media_state.video_enabled and media_state.audio_enabled:
-        stream_path = "cam_with_audio"
-        media_state.restart_mediamtx(stream_path)
+        path = "cam_with_audio"
     elif media_state.video_enabled:
-        stream_path = "cam"
-        media_state.restart_mediamtx(stream_path)
+        path = "cam"
+        # stop_loudness_worker()
     elif media_state.audio_enabled:
-        stream_path = "audio_only"
-        media_state.restart_mediamtx(stream_path)
+        path = "audio_only"
         # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
     else:
-        stream_path = None
-        media_state.stop_mediamtx()
+        path = None
         # stop_loudness_worker()
+
+    if path:
+        media_state.start_mediamtx(path)
+    else:
+        media_state.stop_mediamtx()
 
     return render_template(
         "index.html",
         video_enabled=media_state.video_enabled,
         audio_enabled=media_state.audio_enabled,
-        stream_path=stream_path,
+        stream_path=path,
         cpu_temp = str(get_cpu_temp()),
         cpu_load = str(get_cpu_load()),
         ram = get_ram_usage(),
