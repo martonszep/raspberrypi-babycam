@@ -3,10 +3,10 @@
 {% block content %}
 
 <!-- System Metrics -->
-<p>CPU Temp: <span id="cpu-temp">N/A</span>°C</p>
-<p>CPU Load: <span id="cpu-load">N/A</span>%</p>
-<p>RAM Usage: <span id="ram-used">N/A</span>/<span id="ram-total">N/A</span> MB (<span id="ram-percent">N/A</span>%)</p>
-<p>Throttle: <span id="throttle-status">N/A</span></p>
+<p>CPU Temp: <span id="cpu-temp">{{ cpu_temp }}</span>°C</p>
+<p>CPU Load: <span id="cpu-load">{{ cpu_load }}</span>%</p>
+<p>RAM Usage: <span id="ram-used">{{ ram['used'] }}</span>/<span id="ram-total">{{ ram['total'] }}</span> MB (<span id="ram-percent">{{ ram['percent'] }}</span>%)</p>
+<p>Throttle: <span id="throttle-status">{{ throttle }}</span></p>
 
 {% if video_enabled %}
 <div class="responsive-video">

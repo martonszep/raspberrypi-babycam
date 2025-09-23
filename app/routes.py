@@ -35,6 +35,10 @@ def index():
         video_enabled=media_state.video_enabled,
         audio_enabled=media_state.audio_enabled,
         stream_path=stream_path,
+        cpu_temp = str(get_cpu_temp()),
+        cpu_load = str(get_cpu_load()),
+        ram = get_ram_usage(),
+        throttle = get_throttle_status()['active_issues'].join("; ")
     )
 
 @bp.route("/toggle_video")
