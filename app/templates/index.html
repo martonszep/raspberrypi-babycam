@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
 
 {% if video_enabled %}
 <div class="responsive-video">
@@ -29,7 +28,12 @@
     </div> -->
 {% endif %}
 
-
+<!-- System Metrics -->
+<p>CPU Temp: <span id="cpu-temp">N/A</span></p>
+<p>CPU Load: <span id="cpu-load">N/A</span>%</p>
+<p>RAM Usage: <span id="ram-used">N/A</span>/<span id="ram-total">N/A</span> MB (<span id="ram-percent">N/A</span>%)</p>
+<p>Throttle: <span id="throttle-status">N/A</span></p>
+ 
 
 <!-- Sidebar toggle button -->
 <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, jsonify
 import subprocess
 import os
 import time
+from .services.system_metrics import get_cpu_temp, get_cpu_load, get_ram_usage, get_throttle_status
 from .services.loudness_worker import Loudness, start_loudness_worker, stop_loudness_worker
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,12 +13,6 @@ video_enabled = False
 audio_enabled = False
 mediamtx_process = None
 
-def get_cpu_temp():
-    try:
-        with open("/sys/class/thermal/thermal_zone0/temp") as f:
-            return int(f.read()) / 1000
-    except:
-        return None
     
 def start_mediamtx(path: str):
     global mediamtx_process
@@ -61,13 +56,11 @@ def index():
         stop_mediamtx()
         # stop_loudness_worker()
 
-    temp_c = get_cpu_temp()
     return render_template(
         "index.html",
         video_enabled=video_enabled,
         audio_enabled=audio_enabled,
         stream_path=stream_path,
-        temp_c=temp_c,
     )
 
 @bp.route("/toggle_video")
@@ -92,10 +85,15 @@ def loudness():
         'history': h
     })
 
-@bp.route("/temperature")
-def temperature():
-    """Return current CPU temperature for AJAX refresh"""
-    return str(get_cpu_temp())
+@bp.route("/metrics")
+def metrics():
+    """Return system metrics as JSON (for AJAX updates)."""
+    return jsonify({
+        "cpu_temp": get_cpu_temp(),
+        "cpu_load": get_cpu_load(),
+        "ram": get_ram_usage(),
+        "throttle": get_throttle_status(),
+    })
 
 @bp.route("/shutdown")
 def shutdown():

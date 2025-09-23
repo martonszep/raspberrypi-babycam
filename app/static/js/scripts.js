@@ -16,14 +16,29 @@ function toggleControlSidebar() {
     }
 }
 
-// Refresh CPU temp every 5s
-setInterval(() => {
-    fetch('/temperature')
-        .then(res => res.text())
-        .then(temp => {
-            document.getElementById('cpu-temp').innerText = temp + '°C';
-        });
-}, 5000);
+// Refresh system metrics every 5s
+function updateMetrics() {
+  fetch("/metrics")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("cpu-temp").innerText = data.cpu_temp + "°C";
+      document.getElementById("cpu-load").innerText = data.cpu_load;
+      document.getElementById("ram-used").innerText = data.ram.used;
+      document.getElementById("ram-total").innerText = data.ram.total;
+      document.getElementById("ram-percent").innerText = data.ram.percent;
+      const throttleEl = document.getElementById("throttle-status");
+      if(data.throttle.error) {
+        throttleEl.innerText = data.throttle.error;
+      } else {
+        if(data.throttle.active_issues.length === 0) {
+          throttleEl.innerText = "No active issues (" + data.throttle.raw + ")";
+        } else {
+          throttleEl.innerText = data.throttle.active_issues.join("; ") + " (" + data.throttle.raw + ")";
+        }
+      }
+    });
+}
+setInterval(updateMetrics, 5000);
 
 document.addEventListener('DOMContentLoaded', () => {
     const audioEnabled = JSON.parse("{{ 'true' if audio_enabled else 'false' }}");
