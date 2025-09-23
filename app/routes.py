@@ -32,6 +32,7 @@ def index():
     else:
         media_state.stop_mediamtx()
 
+    throttle_status = get_throttle_status['active_issues']
     return render_template(
         "index.html",
         video_enabled=media_state.video_enabled,
@@ -40,7 +41,7 @@ def index():
         cpu_temp = str(get_cpu_temp()),
         cpu_load = str(get_cpu_load()),
         ram = get_ram_usage(),
-        throttle = "; ".join(get_throttle_status()['active_issues'])
+        throttle = "; ".join(throttle_status) if throttle_status else "No issues",
     )
 
 @bp.route("/toggle_video")

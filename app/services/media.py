@@ -56,7 +56,7 @@ class MediaState:
             )
             self.restart_mediamtx()
 
-    def start_ram_monitor(self, path, interval=30, threshold_percent=90):
+    def start_ram_monitor(self, interval=30, threshold_percent=90):
         """Start a background thread to periodically check RAM and restart MediaMTX if needed."""
         def monitor():
             while True:
