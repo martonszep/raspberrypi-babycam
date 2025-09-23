@@ -8,6 +8,7 @@ from .services.system_metrics import get_cpu_temp, get_cpu_load, get_ram_usage, 
 
 bp = Blueprint("main", __name__)
 media_state = MediaState() # Singleton instance
+media_state.start_ram_monitor(interval=10, threshold_percent=90)  # Start RAM monitoring thread
 
 
 @bp.route("/")
@@ -32,7 +33,7 @@ def index():
     else:
         media_state.stop_mediamtx()
 
-    throttle_status = get_throttle_status['active_issues']
+    throttle_status = get_throttle_status()['active_issues']
     return render_template(
         "index.html",
         video_enabled=media_state.video_enabled,
