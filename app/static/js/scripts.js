@@ -21,7 +21,7 @@ function updateMetrics() {
   fetch("/metrics")
     .then(res => res.json())
     .then(data => {
-      document.getElementById("cpu-temp").innerText = data.cpu_temp + "°C";
+      document.getElementById("cpu-temp").innerText = data.cpu_temp;
       document.getElementById("cpu-load").innerText = data.cpu_load;
       document.getElementById("ram-used").innerText = data.ram.used;
       document.getElementById("ram-total").innerText = data.ram.total;
