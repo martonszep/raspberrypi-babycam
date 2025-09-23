@@ -30,7 +30,7 @@ class MediaState:
             self.mediamtx_process = None
 
     def start_mediamtx(self, path):
-        if path == self.current_path and self.mediamtx_process:
+        if path == self.stream_path and self.mediamtx_process:
             # Already running the correct path
             return
         self.stop_mediamtx()
@@ -38,12 +38,12 @@ class MediaState:
             os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
             os.path.join(BASE_DIR, f"../mediamtx/mediamtx_{path}.yml")
         ])
-        self.current_path = path
+        self.stream_path = path
         # time.sleep(0.5)  # Give it a moment to start
 
     def restart_mediamtx(self):
-        if self.current_path:
-            self.start_mediamtx(self.current_path)
+        if self.stream_path:
+            self.start_mediamtx(self.stream_path)
 
     def check_ram_and_restart(self, threshold_percent=90):
         """Optional: check RAM usage and restart MediaMTX if above threshold."""
