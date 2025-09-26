@@ -2,124 +2,78 @@ from flask import Blueprint, render_template, redirect, url_for, jsonify
 import subprocess
 import os
 import time
-from .services.loudness_worker import Loudness, start_loudness_worker, stop_loudness_worker
+from .services.media import MediaState
+from .services.system_metrics import get_cpu_temp, get_cpu_load, get_ram_usage, get_throttle_status
+# from .services.loudness_worker import Loudness, start_loudness_worker, stop_loudness_worker
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 bp = Blueprint("main", __name__)
+media_state = MediaState() # Singleton instance
+media_state.start_ram_monitor(interval=10, threshold_percent=90)  # Start RAM monitoring thread
 
-# Global variable to track stream process
-video_enabled = False
-audio_enabled = False
-mediamtx_process = None
-audio_process = None
-
-def get_cpu_temp():
-    try:
-        with open("/sys/class/thermal/thermal_zone0/temp") as f:
-            return int(f.read()) / 1000
-    except:
-        return None
-    
-def start_mediamtx():
-    global mediamtx_process
-    if mediamtx_process is None:
-        mediamtx_process = subprocess.Popen([
-            os.path.join(BASE_DIR, "../mediamtx/mediamtx"),
-            os.path.join(BASE_DIR, "../mediamtx/custom_mediamtx.yml")
-        ])
-
-def stop_mediamtx():
-    global mediamtx_process
-    if mediamtx_process:
-        mediamtx_process.terminate()
-        mediamtx_process = None
-
-def stop_audio_stream():
-    global audio_process
-    if audio_process:
-        audio_process.terminate()
-        audio_process = None
-    stop_loudness_worker()
 
 @bp.route("/")
 def index():
     global video_enabled, audio_enabled
 
     # Decide which stream to show
-    if video_enabled and audio_enabled:
-        stream_path = "cam_with_audio"
-        stop_audio_stream()
-    elif video_enabled:
-        stream_path = "cam"
-        stop_audio_stream()  # stop audio if only video
-    elif audio_enabled:
-        stream_path = None
-        stop_mediamtx()  # stop MediaMTX if only audio
+    if media_state.video_enabled and media_state.audio_enabled:
+        path = "cam_with_audio"
+    elif media_state.video_enabled:
+        path = "cam"
+        # stop_loudness_worker()
+    elif media_state.audio_enabled:
+        path = "audio_only"
+        # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100) 
     else:
-        stream_path = None
-        stop_mediamtx()
-        stop_audio_stream()
+        path = None
+        # stop_loudness_worker()
 
-    temp_c = get_cpu_temp()
+    if path:
+        media_state.start_mediamtx(path)
+    else:
+        media_state.stop_mediamtx()
+
+    throttle_status = get_throttle_status()['active_issues']
     return render_template(
         "index.html",
-        video_enabled=video_enabled,
-        audio_enabled=audio_enabled,
-        stream_path=stream_path,
-        temp_c=temp_c,
+        video_enabled=media_state.video_enabled,
+        audio_enabled=media_state.audio_enabled,
+        stream_path=path,
+        cpu_temp = str(get_cpu_temp()),
+        cpu_load = str(get_cpu_load()),
+        ram = get_ram_usage(),
+        throttle = "; ".join(throttle_status) if throttle_status else "No issues",
     )
 
 @bp.route("/toggle_video")
 def toggle_video():
-    global video_enabled
-    video_enabled = not video_enabled
-    if video_enabled:
-        start_mediamtx()
-        stop_audio_stream()
-    else:
-        stop_mediamtx
+    media_state.video_enabled = not media_state.video_enabled
     return redirect(url_for("main.index"))
 
 @bp.route("/toggle_audio")
 def toggle_audio():
-    global audio_enabled, audio_process
-    audio_enabled = not audio_enabled
-    stop_audio_stream()
-    if video_enabled and audio_enabled:
-        start_mediamtx()        
-    elif audio_enabled and not video_enabled:
-        stop_mediamtx()
-        audio_process = subprocess.Popen([
-            'ffmpeg',
-            '-f', 'alsa',
-            '-ac', '1',
-            '-ar', '44100',
-            '-sample_fmt', 's16',
-            '-i', 'plughw:0,0',
-            '-c:a', 'libopus',
-            '-b:a', '32000',
-            '-content_type', 'audio/ogg',
-            '-f', 'ogg',
-            'icecast://source:hackme@localhost:8000/audio.ogg'
-        ])
-        time.sleep(0.5)
-        # start_loudness_worker(device='hw:0,0', sample_interval=1.0, duration=0.5, samplerate=44100)
+    media_state.audio_enabled = not media_state.audio_enabled
     return redirect(url_for("main.index"))
 
-@bp.route('/loudness')
-def loudness():
-    # returns latest db and short history
-    h = list(Loudness['history'])
-    return jsonify({
-        'db': Loudness['db'],
-        'rms': Loudness['rms'],
-        'history': h
-    })
+# @bp.route('/loudness')
+# def loudness():
+#     # returns latest db and short history
+#     h = list(Loudness['history'])
+#     return jsonify({
+#         'db': Loudness['db'],
+#         'rms': Loudness['rms'],
+#         'history': h
+#     })
 
-@bp.route("/temperature")
-def temperature():
-    """Return current CPU temperature for AJAX refresh"""
-    return str(get_cpu_temp())
+@bp.route("/metrics")
+def metrics():
+    """Return system metrics as JSON (for AJAX updates)."""
+    return jsonify({
+        "cpu_temp": get_cpu_temp(),
+        "cpu_load": get_cpu_load(),
+        "ram": get_ram_usage(),
+        "throttle": get_throttle_status(),
+    })
 
 @bp.route("/shutdown")
 def shutdown():

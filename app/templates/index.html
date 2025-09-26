@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>CPU Temp: <span id="cpu-temp">{{ temp_c }}°C</span></p>
+
+<!-- System Metrics -->
+<p>CPU Temp: <span id="cpu-temp">{{ cpu_temp }}</span>°C</p>
+<p>CPU Load: <span id="cpu-load">{{ cpu_load }}</span>%</p>
+<p>RAM Usage: <span id="ram-used">{{ ram['used'] }}</span>/<span id="ram-total">{{ ram['total'] }}</span> MB (<span id="ram-percent">{{ ram['percent'] }}</span>%)</p>
+<p>Throttle: <span id="throttle-status">{{ throttle }}</span></p>
 
 {% if video_enabled %}
 <div class="responsive-video">
@@ -15,9 +20,12 @@
 </div>
 {% elif audio_enabled %}
     <!-- Audio-only icecast stream -->
-    <audio id="audio-player" controls autoplay>
-        <source src="http://{{ request.host.split(':')[0] }}:8000/audio.ogg" type="audio/ogg">
-    </audio>
+    <iframe
+        id="audio-iframe"
+        src="http://{{ request.host.split(':')[0] }}:8889/{{ stream_path }}"
+        allow="autoplay; microphone"
+        allowfullscreen
+    ></iframe>
 
     <!-- Loudness display -->
     <!-- <div id="loudness-panel">
@@ -26,7 +34,7 @@
     </div> -->
 {% endif %}
 
-
+ 
 
 <!-- Sidebar toggle button -->
 <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
