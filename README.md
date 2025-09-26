@@ -1,10 +1,10 @@
 # Raspberry Pi Baby Monitor (Flask + MediaMTX)
 
-This project turns a Raspberry Pi Zero 2 W into a simple baby monitor with:
+This project turns a Raspberry Pi (e.g., Zero 2 W or a more capable model) into a simple baby monitor with the following features:
 - **Video + audio streaming** (via [MediaMTX](https://github.com/bluenviron/mediamtx))
 - **Web interface** (Flask) to toggle video/audio
-- **Temperature monitoring**
-- **Shutdown/Reboot controls** (with Font Awesome sidebar)
+- **System stats monitoring (CPU temperature, etc.)**
+- **Shutdown/Reboot controls**
 - **Systemd service for auto-start on boot**
 
 ---
@@ -49,14 +49,35 @@ cd mediamtx
 wget https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_arm64v8.tar.gz
 tar -xvzf mediamtx_linux_arm64v8.tar.gz
 ```
-If you do not want to use the `custom_mediamtx.yml`, the main part you'll need to configure at the end of the config file is:
+After unpacking, you will have the `mediamtx` executable and the default `mediamtx.yml` configuration file.
+
+Custom configs files are provided depending on the streaming media type:
+```
+mediamtx\mediamtx_audio_only.yml
+mediamtx\mediamtx_cam_with_audio.yml
+mediamtx\mediamtx_cam.yml
+```
+If you are not using the provided config files, the most important section to add to the end of your configuration file is `paths:` (merging them in one config file would cause conflict on using the audio device):
+
 ```yaml
 paths:
-  # mic:
-  #   source: alsa://hw:0,0
+  # mediamtx_audio_only.yml
+  audio_only:
+    runOnInit: >
+      gst-launch-1.0
+      alsasrc device=hw:0,0 !
+      audioconvert ! audioresample !
+      opusenc bitrate=16000 !
+      rtspclientsink location=rtsp://localhost:8554/audio_only
+    runOnInitRestart: yes
+
+  # mediamtx_cam.yml
   cam:
     source: rpiCamera
-    sourceOnDemand: yes
+
+  # mediamtx_cam_with_audio.yml  
+  cam:
+    source: rpiCamera
     runOnReady: >
       gst-launch-1.0
       rtspclientsink name=s location=rtsp://localhost:8554/cam_with_audio
@@ -64,8 +85,8 @@ paths:
       alsasrc device=hw:0,0 ! opusenc bitrate=16000 ! s.
     runOnReadyRestart: yes
   cam_with_audio:
-    sourceOnDemand: yes
 ```
+**Note:** Ensure the audio device (`device=hw:0,0`) matches the output of `arecord -l`. Run this command to find the correct device ID for your microphone.
 
 ### 3. (Optional) Access your router and set the IP of the Raspberry Pi device to static
 Otherwise you need to find out the IP every time it changes in order to access the app.
