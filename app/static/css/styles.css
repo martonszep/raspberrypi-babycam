@@ -1,3 +1,26 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #1a1a1a;
+}
+
+.metric-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.metric-value {
+    font-weight: 700;
+    color: #0a74da;
+}
+
 /* Responsive video iframe */
 .responsive-video {
     position: relative;
