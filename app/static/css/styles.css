@@ -58,10 +58,8 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 100px);
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+    margin: 40px auto;        /* add a little breathing room */
+    width: 100%;
 }
 
 .gif-container img {
