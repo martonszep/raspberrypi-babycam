@@ -63,13 +63,16 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 120px); /* keep it in view without overflow */
+    height: calc(100vh - 100px);
+    margin: 0;
+    padding: 0;
     overflow: hidden;
 }
 
 .gif-container img {
-    max-width: 90%;
+    width: auto;
     height: auto;
+    max-width: 90%;
+    max-height: 80vh;
     object-fit: contain;
-    /* background: radial-gradient(circle, #333 0%, #000 100%); */
 }
