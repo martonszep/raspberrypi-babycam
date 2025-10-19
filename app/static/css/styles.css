@@ -11,11 +11,6 @@ h1 {
     color: #1a1a1a;
 }
 
-/* Ensure the main content doesn't overlap or push past the mobile bar */
-/* main {
-    padding-bottom: 90px; /* make space for mobile bottom bar */
-} */
-
 .metric-label {
     font-weight: 500;
     margin-right: 10px;
