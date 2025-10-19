@@ -11,6 +11,11 @@ h1 {
     color: #1a1a1a;
 }
 
+/* Ensure the main content doesn't overlap or push past the mobile bar */
+main {
+    padding-bottom: 90px; /* make space for mobile bottom bar */
+}
+
 .metric-label {
     font-weight: 500;
     margin-right: 10px;
@@ -52,4 +57,19 @@ h1 {
 
 .status-led.on {
     background-color: red; /* active */
+}
+
+.gif-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px); /* keep it in view without overflow */
+    overflow: hidden;
+}
+
+.gif-container img {
+    max-width: 90%;
+    height: auto;
+    object-fit: contain;
+    background: radial-gradient(circle, #333 0%, #000 100%);
 }

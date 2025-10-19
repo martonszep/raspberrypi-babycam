@@ -27,14 +27,10 @@
         allowfullscreen
     ></iframe>
 {% else %}
-    <div style="display: flex; justify-content: center; align-items: center; height: 100%; margin-top: 20px;">
-        <img 
-            src="{{ url_for('static', filename='images/confused_travolta.gif') }}" 
-            alt="Confused Travolta" 
+    <div class="gif-container">
+        <img src="{{ url_for('static', filename='images/confused_travolta.gif') }}" 
             width="490" 
-            height="476"
-            style="object-fit: contain;"
-        >
+            height="476">
     </div>
 
     <!-- Loudness display -->
