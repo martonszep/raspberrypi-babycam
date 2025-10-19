@@ -12,9 +12,9 @@ h1 {
 }
 
 /* Ensure the main content doesn't overlap or push past the mobile bar */
-main {
+/* main {
     padding-bottom: 90px; /* make space for mobile bottom bar */
-}
+} */
 
 .metric-label {
     font-weight: 500;
@@ -71,5 +71,5 @@ main {
     max-width: 90%;
     height: auto;
     object-fit: contain;
-    background: radial-gradient(circle, #333 0%, #000 100%);
+    /* background: radial-gradient(circle, #333 0%, #000 100%); */
 }
