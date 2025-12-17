@@ -92,6 +92,11 @@ paths:
 Otherwise you need to find out the IP every time it changes in order to access the app.
 
 ### 4. (Optional) Permissions for shutdown/reboot
+For more security, turn of passwordless sudo:
+```bash
+sudo mv /etc/sudoers.d/010_pi-nopasswd /etc/sudoers.d/010_pi-nopasswd.disabled
+```
+
 Allow the Flask app to call shutdown/reboot without password:
 ```bash
 sudo visudo
