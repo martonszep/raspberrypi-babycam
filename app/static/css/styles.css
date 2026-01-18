@@ -1,3 +1,26 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #cccccc;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #1a1a1a;
+}
+
+.metric-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.metric-value {
+    font-weight: 700;
+    color: #0a74da;
+}
+
 /* Responsive video iframe */
 .responsive-video {
     position: relative;
@@ -29,4 +52,20 @@
 
 .status-led.on {
     background-color: red; /* active */
+}
+
+.gif-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;        /* add a little breathing room */
+    width: 100%;
+}
+
+.gif-container img {
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 80vh;
+    object-fit: contain;
 }

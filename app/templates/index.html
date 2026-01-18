@@ -26,6 +26,12 @@
         allow="autoplay; microphone"
         allowfullscreen
     ></iframe>
+{% else %}
+    <div class="gif-container">
+        <img src="{{ url_for('static', filename='images/confused_travolta.gif') }}" 
+            width="490" 
+            height="476">
+    </div>
 
     <!-- Loudness display -->
     <!-- <div id="loudness-panel">

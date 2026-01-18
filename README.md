@@ -7,19 +7,13 @@ This project turns a Raspberry Pi (e.g., Zero 2 W or a more capable model) into 
 - **Shutdown/Reboot controls**
 - **Systemd service for auto-start on boot**
 
----
-
 ## 📦 Prerequisites
-
 - Raspberry Pi OS Lite 64-bit (recommended for performance)
 - Raspberry Pi camera module (or USB webcam)
 - USB microphone (for audio)
 - Python 3.9+ (included in Raspberry Pi OS)
 
----
-
 ## 🛠️ Setup
-
 ### 1. Install dependencies and python venv
 
 ```bash
@@ -92,6 +86,11 @@ paths:
 Otherwise you need to find out the IP every time it changes in order to access the app.
 
 ### 4. (Optional) Permissions for shutdown/reboot
+For more security, turn of passwordless sudo:
+```bash
+sudo mv /etc/sudoers.d/010_pi-nopasswd /etc/sudoers.d/010_pi-nopasswd.disabled
+```
+
 Allow the Flask app to call shutdown/reboot without password:
 ```bash
 sudo visudo
@@ -100,6 +99,40 @@ Scroll down to the bottom and add:
 ```bash
 <your_username> ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot
 ```
+
+### 5. (Optional) Disable Wi-Fi power saving
+Create a service to turn off wifi power saving at boot.
+
+```bash
+sudo nano /etc/systemd/system/wifi-powersave-off.service
+```
+
+```ini
+[Unit]
+Description=Disable WiFi power saving
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/iw dev wlan0 set power_save off
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+Enable and start it:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable wifi-powersave-off
+sudo systemctl start wifi-powersave-off
+```
+
+Verify it worked:
+```bash
+iw dev wlan0 get power_save
+```
+
 
 ## 🚀 Launch the app
 ```bash
@@ -152,3 +185,48 @@ If `systemd` has been service has been set up, you can find the logs here:
 ```bash
 journalctl -u babymonitor.service -f
 ```
+
+To be able to check logs from previous boots set persistent logging:
+```bash
+sudo nano /etc/systemd/journald.conf
+```
+
+You want:
+```ini
+Storage=persistent
+SystemMaxUse=50M
+```
+
+Then:
+```bash
+sudo mkdir -p /var/log/journal
+sudo systemctl restart systemd-journald
+```
+
+### Useful commands:
+Previous boot kernel + Wi-Fi errors:
+```bash
+journalctl -b -1 -k | grep -Ei 'wlan|wifi|brcm|cfg80211|firmware|mmc|usb'
+```
+
+Full Wi-Fi stack errors:
+```bash
+journalctl -b -1 | grep -Ei 'wpa|dhcp|network|wlan0'
+```
+
+Hard lockups / OOM:
+```bash
+journalctl -b -1 | grep -Ei 'oom|out of memory|killed process|hung task'
+```
+
+CPU + temp history (last boot):
+```bash
+journalctl -b -1 | grep -E 'thermal|throttled|temperature'
+```
+
+SD card / I/O errors:
+```bash
+journalctl -b -1 -k | grep -Ei 'mmc|sd|blk|I/O error'
+```
+
+---
